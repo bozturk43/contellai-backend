@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3FAB410A-B373-4A92-A92A-18E2E6B35194}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaAssistant.Core", "src\SocialMediaAssistant.Core\SocialMediaAssistant.Core.csproj", "{7FC4D841-DBD4-4FBB-BF2C-E41E9CBD1BA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaAssistant.Infrastructure", "src\SocialMediaAssistant.Infrastructure\SocialMediaAssistant.Infrastructure.csproj", "{75F01152-D07C-445B-B169-94F5903DB93E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaAssistant.Application", "src\SocialMediaAssistant.Application\SocialMediaAssistant.Application.csproj", "{429B70B6-E0BE-45AC-92C2-934EFBE8897E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaAssistant.API", "src\SocialMediaAssistant.API\SocialMediaAssistant.API.csproj", "{9AA9A03B-C348-4313-A225-D90EFE2C587F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D09314A1-78EF-4F39-A858-DADBE8C0B893}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaAssistant.Application.Tests", "tests\SocialMediaAssistant.Application.Tests\SocialMediaAssistant.Application.Tests.csproj", "{2A6B01C0-E917-4295-AD7C-653ECB335087}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaAssistant.API.IntegrationTests", "tests\SocialMediaAssistant.API.IntegrationTests\SocialMediaAssistant.API.IntegrationTests.csproj", "{EE5FE345-8CF8-4A2B-8479-77B61AF8ECCB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7FC4D841-DBD4-4FBB-BF2C-E41E9CBD1BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FC4D841-DBD4-4FBB-BF2C-E41E9CBD1BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FC4D841-DBD4-4FBB-BF2C-E41E9CBD1BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FC4D841-DBD4-4FBB-BF2C-E41E9CBD1BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75F01152-D07C-445B-B169-94F5903DB93E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75F01152-D07C-445B-B169-94F5903DB93E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75F01152-D07C-445B-B169-94F5903DB93E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75F01152-D07C-445B-B169-94F5903DB93E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{429B70B6-E0BE-45AC-92C2-934EFBE8897E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{429B70B6-E0BE-45AC-92C2-934EFBE8897E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{429B70B6-E0BE-45AC-92C2-934EFBE8897E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{429B70B6-E0BE-45AC-92C2-934EFBE8897E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AA9A03B-C348-4313-A225-D90EFE2C587F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AA9A03B-C348-4313-A225-D90EFE2C587F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AA9A03B-C348-4313-A225-D90EFE2C587F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AA9A03B-C348-4313-A225-D90EFE2C587F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A6B01C0-E917-4295-AD7C-653ECB335087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A6B01C0-E917-4295-AD7C-653ECB335087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A6B01C0-E917-4295-AD7C-653ECB335087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A6B01C0-E917-4295-AD7C-653ECB335087}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE5FE345-8CF8-4A2B-8479-77B61AF8ECCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE5FE345-8CF8-4A2B-8479-77B61AF8ECCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE5FE345-8CF8-4A2B-8479-77B61AF8ECCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE5FE345-8CF8-4A2B-8479-77B61AF8ECCB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7FC4D841-DBD4-4FBB-BF2C-E41E9CBD1BA1} = {3FAB410A-B373-4A92-A92A-18E2E6B35194}
+		{75F01152-D07C-445B-B169-94F5903DB93E} = {3FAB410A-B373-4A92-A92A-18E2E6B35194}
+		{429B70B6-E0BE-45AC-92C2-934EFBE8897E} = {3FAB410A-B373-4A92-A92A-18E2E6B35194}
+		{9AA9A03B-C348-4313-A225-D90EFE2C587F} = {3FAB410A-B373-4A92-A92A-18E2E6B35194}
+		{2A6B01C0-E917-4295-AD7C-653ECB335087} = {D09314A1-78EF-4F39-A858-DADBE8C0B893}
+		{EE5FE345-8CF8-4A2B-8479-77B61AF8ECCB} = {D09314A1-78EF-4F39-A858-DADBE8C0B893}
+	EndGlobalSection
+EndGlobal
