@@ -31,7 +31,15 @@ public class AuthController : ControllerBase
         }
 
         var token = GenerateJwtToken(user.Id, user.Email);
-        return Ok(new { token = token });
+        var userDto = new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            CoinBalance = user.CoinBalance
+        };
+
+        return Ok(new { token = token, user = userDto });
     }
 
     private string GenerateJwtToken(Guid userId, string email)
