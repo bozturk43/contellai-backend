@@ -22,7 +22,14 @@ public class WorkspaceRepository : Repository<Workspace>, IWorkspaceRepository
         // Belirli bir workspace'i getirirken, ona ait User nesnesini de dahil et.
         // Not: .Include() metodu FindAsync ile çalışmaz, bu yüzden FirstOrDefaultAsync kullanıyoruz.
         return await _context.Workspaces
-            .Include(w => w.User) // İLİŞKİLİ USER NESNESİNİ DAHİL ET
-            .FirstOrDefaultAsync(w => w.Id == id);
+        .Include(w => w.User)
+        .Include(w => w.ConnectedAccounts)
+        .FirstOrDefaultAsync(w => w.Id == id);
+    }
+    public async Task<IEnumerable<Workspace>> GetByUserIdAsync(Guid userId)
+    {
+        return await _context.Workspaces
+            .Where(w => w.UserId == userId)
+            .ToListAsync();
     }
 }   

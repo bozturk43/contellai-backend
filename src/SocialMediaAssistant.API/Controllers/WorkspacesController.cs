@@ -22,7 +22,8 @@ namespace SocialMediaAssistant.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllForAdmin()
         {
             var workspaces = await _unitOfWork.Workspaces.GetAllAsync();
             var workspacesDto = workspaces.Select(w => new WorkspaceDto
@@ -41,6 +42,24 @@ namespace SocialMediaAssistant.API.Controllers
                     Name = w.User.Name, 
                     Email = w.User.Email 
                 }
+            });
+            return Ok(workspacesDto);
+        }
+        [HttpGet("mine")]
+        public async Task<IActionResult> GetMyWorkspaces()
+        {
+            var userId = GetCurrentUserId();
+            var workspaces = await _unitOfWork.Workspaces.GetByUserIdAsync(userId);
+            var workspacesDto = workspaces.Select(w => new WorkspaceDto
+            {
+                Id = w.Id,
+                UserId = w.UserId,
+                BrandName = w.BrandName,
+                Industry = w.Industry,
+                TargetAudience = w.TargetAudience,
+                BrandTone = w.BrandTone,
+                Keywords = w.Keywords,
+                CreatedAt = w.CreatedAt
             });
             return Ok(workspacesDto);
         }
@@ -68,7 +87,15 @@ namespace SocialMediaAssistant.API.Controllers
                     Id = workspace.User.Id,
                     Name = workspace.User.Name,
                     Email = workspace.User.Email
-                }
+                },
+                ConnectedAccounts = workspace.ConnectedAccounts.Select(acc => new ConnectedAccountDto
+                {
+                    Id = acc.Id,
+                    WorkspaceId = acc.WorkspaceId,
+                    Platform = acc.Platform,
+                    PlatformUsername = acc.PlatformUsername,
+                    CreatedAt = acc.CreatedAt
+                }).ToList()
             };
             return Ok(workspaceDto);
         }

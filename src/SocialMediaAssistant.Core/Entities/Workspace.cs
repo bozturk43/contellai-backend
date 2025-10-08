@@ -13,4 +13,8 @@ public class Workspace
 
     // Navigation Property
     public User? User { get; set; }
+    public ICollection<ContentPost> ContentPosts { get; set; } = new List<ContentPost>();
+    public ICollection<ConnectedAccount> ConnectedAccounts { get; set; } = new List<ConnectedAccount>();
+
+
 }

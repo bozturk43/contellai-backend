@@ -35,9 +35,13 @@ public class ContentPostsController : ControllerBase
             return Forbid("Bu çalışma alanına içerik ekleme yetkiniz yok.");
 
         var user = await _unitOfWork.Users.GetByIdAsync(userId);
-        if (!await _coinService.HasSufficientCoins(userId, postDto.ContentType))
+        try
         {
-            return BadRequest(new { message = "Bu içerik türü için yeterli krediniz (coin) bulunmamaktadır." });
+            await _coinService.DeductCoinsForAction(userId, postDto.ContentType);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
 
         var generatedContent = await _contentGenerationService.GenerateContentAsync(postDto.UserPrompt, workspace);
@@ -52,15 +56,6 @@ public class ContentPostsController : ControllerBase
         var workspace = await _unitOfWork.Workspaces.GetByIdAsync(postDto.WorkspaceId);
         if (!await IsUserOwnerOfWorkspace(postDto.WorkspaceId))
             return Forbid("Bu çalışma alanına içerik kaydetme yetkiniz yok.");
-
-        try
-        {
-            await _coinService.DeductCoinsForAction(userId, postDto.ContentType);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
 
         var newPost = new ContentPost
         {

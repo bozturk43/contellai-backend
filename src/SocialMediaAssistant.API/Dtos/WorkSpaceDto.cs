@@ -13,5 +13,8 @@ namespace SocialMediaAssistant.API.Dtos
 
         // DİKKAT: User entity'si yerine UserDto kullanıyoruz
         public UserDto? User { get; set; }
+        public List<ConnectedAccountDto> ConnectedAccounts { get; set; } = new();
+        public List<ContentPostDto> ContentPosts { get; set; } = new();
+
     }
 }
