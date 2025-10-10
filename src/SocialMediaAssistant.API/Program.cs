@@ -67,7 +67,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IContentGenerationService, ContentGenerationService>();
 builder.Services.AddScoped<ICoinService, CoinService>();
 builder.Services.AddHostedService<PublishingService>();
-builder.Services.AddHttpClient<IImageGenerationService, UnsplashImageGenerationService>();
+// builder.Services.AddHttpClient<IImageGenerationService, UnsplashImageGenerationService>();
+builder.Services.AddHttpClient<IImageGenerationService, HuggingFaceImageGenerationService>();
+
 
 builder.Services.AddAuthentication(options =>
 {
