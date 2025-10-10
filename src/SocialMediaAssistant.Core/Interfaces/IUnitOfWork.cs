@@ -6,6 +6,7 @@ namespace SocialMediaAssistant.Core.Interfaces
         IWorkspaceRepository Workspaces { get; }
         IConnectedAccountRepository ConnectedAccounts { get; }
         IContentPostRepository ContentPosts { get; } 
+        IKnowledgeArticleRepository KnowledgeArticles { get; }
         Task<int> CompleteAsync();
     }
 }
