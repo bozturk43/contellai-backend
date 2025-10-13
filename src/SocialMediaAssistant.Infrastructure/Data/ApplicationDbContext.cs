@@ -15,6 +15,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ConnectedAccount> ConnectedAccounts { get; set; }
     public DbSet<ContentPost> ContentPosts { get; set; }
     public DbSet<KnowledgeArticle> KnowledgeArticles { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

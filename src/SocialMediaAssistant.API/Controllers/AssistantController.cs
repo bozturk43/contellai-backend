@@ -11,6 +11,8 @@ using SocialMediaAssistant.Core.Entities;
 using Pgvector;
 using System.IO;
 using System.Text.Json;
+using System.Security.Claims;
+using SocialMediaAssistant.Core.Enums;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -43,6 +45,8 @@ public class AssistantController : ControllerBase
     [HttpPost("chat")]
     public async Task<IActionResult> PostChatMessage([FromBody] ChatRequest request)
     {
+        var userId = GetCurrentUserId();
+
         // 1. ADIM (Retrieval): Kullanıcının yeni sorusunu vektöre çevir
         var questionEmbedding = new Vector(await GetEmbeddingAsync(request.NewMessage));
          // 2. ADIM (Retrieval): Veritabanında bu soruya en uygun bilgi makalesini ara
@@ -73,25 +77,63 @@ public class AssistantController : ControllerBase
         var response = await model.GenerateContent(promptBuilder.ToString());
         
         // TODO: Kullanıcının sorusunu ve AI'ın cevabını ChatMessages tablosuna kaydet.
+        var aiReplyText = response.Text;
 
-        return Ok(new { reply = response.Text });
+        var userMessage = new SocialMediaAssistant.Core.Entities.ChatMessage
+        {
+            UserId = userId,
+            Sender = MessageSender.User,
+            Text = request.NewMessage
+        };
+        var aiMessage = new SocialMediaAssistant.Core.Entities.ChatMessage
+        {
+            UserId = userId,
+            Sender = MessageSender.Ai,
+            Text = aiReplyText
+        };
+
+        await _unitOfWork.ChatMessages.AddAsync(userMessage);
+        await _unitOfWork.ChatMessages.AddAsync(aiMessage);
+        await _unitOfWork.CompleteAsync();
+
+        return Ok(new { reply = aiReplyText });
+    }
+    [HttpGet("history")]
+    public async Task<IActionResult> GetChatHistory()
+    {
+        var userId = GetCurrentUserId();
+        var history = await _unitOfWork.ChatMessages.GetMessagesByUserIdAsync(userId);
+        var historyDto = history.Select(m => new ChatMessageDto 
+        { 
+            Sender = m.Sender.ToString().ToLower(),
+            Text = m.Text,
+        });
+
+        return Ok(historyDto);
+    }
+    [HttpDelete("history")]
+    public async Task<IActionResult> DeleteHistory()
+    {
+        var userId = GetCurrentUserId();
+
+        await _unitOfWork.ChatMessages.DeleteByUserIdAsync(userId);
+        // CompleteAsync'e gerek yok, ExecuteDeleteAsync doğrudan veritabanını etkiler.
+
+        return NoContent();
     }
     // === BİLGİ BANKASINI DOLDURMA (SEEDING) İŞLEMLERİ ===
-
+    public class KnowledgeSeedData
+    {
+        public string Key { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+    }
     // Metni, Google'ın Embedding Modeli ile vektöre çeviren yardımcı metot
     private async Task<float[]> GetEmbeddingAsync(string text)
     {
          var model = _googleAI.GenerativeModel(model: "text-embedding-004");
         var response = await model.EmbedContent(text);
         return response.Embedding.Values.ToArray();
-    }
-
-    
-    public class KnowledgeSeedData
-    {
-        public string Key { get; set; } = string.Empty;
-        public string Title { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
     }
     // Sadece 1 kez çağıracağımız, bilgi bankasını dolduran endpoint
     [HttpPost("seed-knowledge")]
@@ -143,5 +185,11 @@ public class AssistantController : ControllerBase
         }
 
         return Ok($"{newArticlesCount} adet yeni bilgi parçacığı veritabanına eklendi. {existingTitles.Count} adet zaten mevcuttu.");
+    }
+
+    private Guid GetCurrentUserId()
+    {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Guid.Parse(userIdString!);
     }
 }

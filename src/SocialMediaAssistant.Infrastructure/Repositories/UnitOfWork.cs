@@ -11,6 +11,7 @@ namespace SocialMediaAssistant.Infrastructure.Repositories
         public IConnectedAccountRepository ConnectedAccounts { get; private set; }
         public IContentPostRepository ContentPosts { get; private set; }
         public IKnowledgeArticleRepository KnowledgeArticles { get; private set; }
+        public IChatMessageRepository ChatMessages { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -20,6 +21,7 @@ namespace SocialMediaAssistant.Infrastructure.Repositories
             ConnectedAccounts = new ConnectedAccountRepository(_context);
             ContentPosts = new ContentPostRepository(_context);
             KnowledgeArticles = new KnowledgeArticleRepository(_context);
+            ChatMessages = new ChatMessageRepository(_context);
 
         }
 
