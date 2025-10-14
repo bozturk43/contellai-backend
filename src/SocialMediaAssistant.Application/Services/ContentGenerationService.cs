@@ -1,7 +1,8 @@
-using Mscc.GenerativeAI;
 using Microsoft.Extensions.Configuration;
 using SocialMediaAssistant.Application.Interfaces;
+using SocialMediaAssistant.Application.Models;
 using SocialMediaAssistant.Core.Entities;
+using SocialMediaAssistant.Core.Interfaces;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,17 +11,13 @@ namespace SocialMediaAssistant.Application.Services;
 
 public class ContentGenerationService : IContentGenerationService
 {
-    private readonly IConfiguration _configuration;
+    private readonly IGeminiService _geminiService;
     private readonly IImageGenerationService _imageGenerationService;
-    private readonly GoogleAI _googleAI;
 
-    public ContentGenerationService(IConfiguration configuration, IImageGenerationService imageGenerationService)
+    public ContentGenerationService(IImageGenerationService imageGenerationService,IGeminiService geminiService)
     {
-        _configuration = configuration;
+        _geminiService = geminiService;
         _imageGenerationService = imageGenerationService;
-        
-        var apiKey = _configuration["Google:ApiKey"] ?? throw new InvalidOperationException("Google API anahtarı bulunamadı.");
-        _googleAI = new GoogleAI(apiKey);
     }
 
     public async Task<GeneratedContentResult> GenerateContentAsync(string userPrompt, Workspace context)
@@ -41,7 +38,6 @@ public class ContentGenerationService : IContentGenerationService
 
     private async Task<string> GenerateSocialTextAsync(string userPrompt, Workspace context)
     {
-        var model = _googleAI.GenerativeModel(model:Model.GeminiPro);
         
         var promptBuilder = new StringBuilder();
         promptBuilder.AppendLine("Sen, bir sosyal medya içerik üretme asistanısın.");
@@ -56,15 +52,12 @@ public class ContentGenerationService : IContentGenerationService
         promptBuilder.AppendLine("---");
         promptBuilder.AppendLine("Sadece istenen içeriğin metnini üret, ek açıklama veya başlık yapma.");
         
-        var response = await model.GenerateContent(promptBuilder.ToString());
-        
-        return response.Text;
+        return await _geminiService.GenerateTextAsync(promptBuilder.ToString());
+
     }
 
     private async Task<string> GenerateImagePromptAsync(string userPrompt, Workspace context)
-    {
-        var model = _googleAI.GenerativeModel(model:Model.GeminiPro);
-        
+    {        
         var promptBuilder = new StringBuilder();
         promptBuilder.AppendLine("Bir yapay zeka görsel üretme servisi için İngilizce bir prompt oluştur.");
         promptBuilder.AppendLine("Prompt, aşağıdaki Türkçe isteği ve marka kimliğini yansıtmalı.");
@@ -73,8 +66,7 @@ public class ContentGenerationService : IContentGenerationService
         promptBuilder.AppendLine($"Marka Sektörü: {context.Industry}");
         promptBuilder.AppendLine($"Kullanıcı İsteği: {userPrompt}");
 
-        var response = await model.GenerateContent(promptBuilder.ToString());
-        
-        return string.IsNullOrEmpty(response.Text) ? userPrompt : response.Text;
+        var result = await _geminiService.GenerateTextAsync(promptBuilder.ToString());
+        return string.IsNullOrEmpty(result) ? userPrompt : result;
     }
 }

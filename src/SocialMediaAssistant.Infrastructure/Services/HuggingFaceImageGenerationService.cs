@@ -1,11 +1,11 @@
-using SocialMediaAssistant.Application.Interfaces;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using SocialMediaAssistant.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace SocialMediaAssistant.Application.Services;
+namespace SocialMediaAssistant.Infrastructure.Services;
 
 public class HuggingFaceImageGenerationService : IImageGenerationService
 {

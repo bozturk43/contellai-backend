@@ -14,8 +14,4 @@
     <ProjectReference Include="..\SocialMediaAssistant.Core\SocialMediaAssistant.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Mscc.GenerativeAI" Version="2.8.15" />
-  </ItemGroup>
-
 </Project>

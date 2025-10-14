@@ -1,4 +1,4 @@
-namespace SocialMediaAssistant.Application.Interfaces;
+namespace SocialMediaAssistant.Core.Interfaces;
 
 public interface IImageGenerationService
 {

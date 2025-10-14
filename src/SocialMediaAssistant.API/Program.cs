@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SocialMediaAssistant.Infrastructure.Data;
 using SocialMediaAssistant.Core.Interfaces;
 using SocialMediaAssistant.Infrastructure.Repositories;
+using SocialMediaAssistant.Infrastructure.Services;
 using SocialMediaAssistant.Application.Interfaces;
 using SocialMediaAssistant.Application.Services;
 using SocialMediaAssistant.API.BackgroundServices;
@@ -67,6 +68,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IContentGenerationService, ContentGenerationService>();
 builder.Services.AddScoped<ICoinService, CoinService>();
+builder.Services.AddScoped<IGeminiService, GeminiService>();
 builder.Services.AddHostedService<PublishingService>();
 // builder.Services.AddHttpClient<IImageGenerationService, UnsplashImageGenerationService>();
 builder.Services.AddHttpClient<IImageGenerationService, HuggingFaceImageGenerationService>();

@@ -1,10 +1,10 @@
-using SocialMediaAssistant.Application.Interfaces;
+using SocialMediaAssistant.Core.Interfaces;
 using System.Net.Http;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration; 
 using Microsoft.Extensions.Logging;
 
-namespace SocialMediaAssistant.Application.Services;
+namespace SocialMediaAssistant.Core.Services;
 
 public class UnsplashImageGenerationService : IImageGenerationService
 {
