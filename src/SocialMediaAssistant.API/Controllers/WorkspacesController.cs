@@ -36,11 +36,11 @@ namespace SocialMediaAssistant.API.Controllers
                 BrandTone = w.BrandTone,
                 Keywords = w.Keywords,
                 CreatedAt = w.CreatedAt,
-                User = w.User == null ? null : new UserDto 
-                { 
-                    Id = w.User.Id, 
-                    Name = w.User.Name, 
-                    Email = w.User.Email 
+                User = w.User == null ? null : new UserDto
+                {
+                    Id = w.User.Id,
+                    Name = w.User.Name,
+                    Email = w.User.Email
                 }
             });
             return Ok(workspacesDto);
@@ -49,18 +49,17 @@ namespace SocialMediaAssistant.API.Controllers
         public async Task<IActionResult> GetMyWorkspaces()
         {
             var userId = GetCurrentUserId();
-            var workspaces = await _unitOfWork.Workspaces.GetByUserIdAsync(userId);
-            var workspacesDto = workspaces.Select(w => new WorkspaceDto
+            var workspaceSummaries = await _unitOfWork.Workspaces.GetSummariesByUserIdAsync(userId);
+
+            var workspacesDto = workspaceSummaries.Select(s => new WorkspaceDto
             {
-                Id = w.Id,
-                UserId = w.UserId,
-                BrandName = w.BrandName,
-                Industry = w.Industry,
-                TargetAudience = w.TargetAudience,
-                BrandTone = w.BrandTone,
-                Keywords = w.Keywords,
-                CreatedAt = w.CreatedAt
+                Id = s.Id,
+                BrandName = s.BrandName,
+                Industry = s.Industry,
+                PostCount = s.PostCount,
+                AccountCount = s.AccountCount
             });
+
             return Ok(workspacesDto);
         }
 

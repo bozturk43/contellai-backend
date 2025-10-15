@@ -11,7 +11,6 @@ namespace SocialMediaAssistant.API.Dtos
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        // Şimdilik şifreyi basit tutuyoruz, daha sonra hashing ekleyeceğiz.
         [Required]
         public string Password { get; set; } = string.Empty;
     }

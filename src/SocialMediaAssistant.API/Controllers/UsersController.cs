@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using SocialMediaAssistant.API.Dtos;
-using SocialMediaAssistant.Core.Entities; 
+using SocialMediaAssistant.Core.Entities;
 using SocialMediaAssistant.Core.Interfaces;
-using BCrypt.Net;
-
-
+using Microsoft.IdentityModel.Tokens; 
+using System.IdentityModel.Tokens.Jwt; 
+using System.Security.Claims;
+using System.Text;
+using SocialMediaAssistant.Application.Interfaces; 
 namespace SocialMediaAssistant.API.Controllers
 {
     [ApiController]
@@ -12,10 +14,16 @@ namespace SocialMediaAssistant.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public UsersController(IUnitOfWork unitOfWork)
+        private readonly ICoinService _coinService;
+        private readonly IConfiguration _configuration; // Token üretimi için eklendi
+
+        public UsersController(IUnitOfWork unitOfWork, ICoinService coinService, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _coinService = coinService;
+            _configuration = configuration;
         }
+
         // GET: /api/users
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
@@ -25,7 +33,8 @@ namespace SocialMediaAssistant.API.Controllers
             {
                 Id = u.Id,
                 Name = u.Name,
-                Email = u.Email
+                Email = u.Email,
+                CoinBalance = u.CoinBalance
             });
             return Ok(usersDto);
         }
@@ -47,23 +56,40 @@ namespace SocialMediaAssistant.API.Controllers
             };
             return Ok(userDto);
         }
-         // POST: /api/users
+        // POST: /api/users
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
         {
+            // Email zaten var mı diye kontrol et
+            var existingUser = await _unitOfWork.Users.GetByEmailAsync(userDto.Email);
+            if (existingUser != null)
+            {
+                return BadRequest(new { message = "Bu e-posta adresi zaten kullanılıyor." });
+            }
+
             var newUser = new User
             {
                 Name = userDto.Name,
                 Email = userDto.Email,
-                PasswordHash = global::BCrypt.Net.BCrypt.HashPassword(userDto.Password),
-                CoinBalance = 10,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
+                CoinBalance = 200
             };
 
             await _unitOfWork.Users.AddAsync(newUser);
             await _unitOfWork.CompleteAsync();
 
-            // Oluşturulan kaynağın adresini ve kendisini 201 Created cevabıyla döndür
-            return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id }, newUser);
+            // Kullanıcıyı oluşturduktan sonra, onun için bir token üret
+            var token = GenerateJwtToken(newUser.Id, newUser.Email);
+
+            var userDtoToReturn = new UserDto
+            {
+                Id = newUser.Id,
+                Name = newUser.Name,
+                Email = newUser.Email,
+                CoinBalance = newUser.CoinBalance
+            };
+
+            return Ok(new { token = token, user = userDtoToReturn });
         }
         // DELETE: api/users/{id}
         [HttpDelete("{id}")]
@@ -78,6 +104,27 @@ namespace SocialMediaAssistant.API.Controllers
             _unitOfWork.Users.Delete(user);
             await _unitOfWork.CompleteAsync();
             return NoContent();
+        }
+        private string GenerateJwtToken(Guid userId, string email)
+        {
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Role, "User")
+        };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(7),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
